@@ -3,16 +3,26 @@ import { NavLink } from 'react-router-dom';
 import { UserContext } from '../context/UserProvider';
 
 function Navbar() {
-  const { user, setUser } = useContext(UserContext);
+  const { user, signOutUser } = useContext(UserContext);
+  const handleLogout = async (e) => {
+    try {
+      await signOutUser();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div>
       {user ? (
         <>
           <NavLink to="/">Inicio</NavLink>
-          <button onClick={() => setUser(false)}>Logout</button>
+          <button onClick={handleLogout}>Logout</button>
         </>
       ) : (
-        <NavLink to="/login">Login</NavLink>
+        <>
+          <NavLink to="/login">Login</NavLink>
+          <NavLink to="/registro">Registro</NavLink>
+        </>
       )}
     </div>
   );
