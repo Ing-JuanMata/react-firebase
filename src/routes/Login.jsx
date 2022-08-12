@@ -1,43 +1,49 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
+import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import FormError from '../components/FormError';
+import FormInput from '../components/FormInput';
 import { UserContext } from '../context/UserProvider';
+import { erroresFirebase } from '../utils/erroresFirebase';
+import { formValidate } from '../utils/formValidate';
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const { loginUser } = useContext(UserContext);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+  } = useForm();
+  const { required, patternEmail, minLength, validateTrim } = formValidate();
   const navegate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log('Procesando form', email, password);
+  const onSubmit = async ({ email, password }) => {
     try {
       await loginUser(email, password);
       navegate('/');
     } catch (error) {
-      console.log(error.code);
+      setError('firebase', { message: erroresFirebase(error.code) });
     }
   };
 
   return (
     <>
       <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        <input
+      {errors.firebase && <FormError error={errors.firebase.message} />}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <FormInput
           type="email"
-          name="correo"
-          id="correo"
           placeholder="Ingrese email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          {...register('email', { required, pattern: patternEmail })}
         />
-        <input
+        {errors.email && <FormError error={errors.email.message} />}
+        <FormInput
           type="password"
-          name="password"
-          id="password"
-          placeholder=""
-          onChange={(e) => setPassword(e.target.value)}
+          placeholder="******"
+          {...register('password', { minLength, validate: validateTrim })}
         />
+        {errors.password && <FormError error={errors.password.message} />}
         <button type="submit">Acceder</button>
       </form>
     </>
