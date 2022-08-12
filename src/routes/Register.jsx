@@ -15,12 +15,14 @@ function Register() {
     formState: { errors },
     getValues,
     setError,
+    clearErrors,
   } = useForm();
   const { required, patternEmail, minLength, validateTrim, validateEquals } =
     formValidate();
   const navegate = useNavigate();
 
   const onSubmit = async ({ email, password }) => {
+    clearErrors();
     try {
       await registerUser(email, password);
       navegate('/');

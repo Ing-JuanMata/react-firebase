@@ -14,11 +14,13 @@ function Login() {
     handleSubmit,
     formState: { errors },
     setError,
+    clearErrors,
   } = useForm();
   const { required, patternEmail, minLength, validateTrim } = formValidate();
   const navegate = useNavigate();
 
   const onSubmit = async ({ email, password }) => {
+    clearErrors();
     try {
       await loginUser(email, password);
       navegate('/');
