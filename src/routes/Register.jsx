@@ -22,7 +22,6 @@ function Register() {
   const navegate = useNavigate();
 
   const onSubmit = async ({ email, password }) => {
-    clearErrors();
     try {
       await registerUser(email, password);
       navegate('/');
@@ -54,7 +53,9 @@ function Register() {
           {...register('repassword', { validate: validateEquals(getValues) })}
         />
         {errors.repassword && <FormError error={errors.repassword.message} />}
-        <button type="submit">Registrar</button>
+        <button type="submit" onClick={() => clearErrors('firebase')}>
+          Registrar
+        </button>
       </form>
     </>
   );

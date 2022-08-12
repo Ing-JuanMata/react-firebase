@@ -20,7 +20,6 @@ function Login() {
   const navegate = useNavigate();
 
   const onSubmit = async ({ email, password }) => {
-    clearErrors();
     try {
       await loginUser(email, password);
       navegate('/');
@@ -46,7 +45,9 @@ function Login() {
           {...register('password', { minLength, validate: validateTrim })}
         />
         {errors.password && <FormError error={errors.password.message} />}
-        <button type="submit">Acceder</button>
+        <button type="submit" onClick={() => clearErrors('firebase')}>
+          Acceder
+        </button>
       </form>
     </>
   );
